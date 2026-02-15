@@ -1,4 +1,4 @@
-#  Analog Signal Processing & Real-Time Acquisition
+# Analog Signal Processing & Real-Time Acquisition
 
 ![Platform](https://img.shields.io/badge/Platform-ESP32-blue) ![Language](https://img.shields.io/badge/Language-C%2B%2B-orange) ![License](https://img.shields.io/badge/License-MIT-green)
 
