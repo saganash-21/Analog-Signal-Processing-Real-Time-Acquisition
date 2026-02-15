@@ -117,7 +117,7 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 
 ## 🔮 Future Improvements
 * **FFT Frequency Analysis:** Move from simple "Peak-to-Peak" amplitude detection to **Fast Fourier Transform (FFT)**. This would allow the system to distinguish between different *types* of noise (e.g., distinguishing a low-frequency door slam from high-frequency glass breaking).
-* **Adaptive Software Thresholding:** Implement a moving average algorithm in software to automatically calibrate the "Day/Night" thresholds based on the ambient light history of the last hour, rather than using hard-coded values (1.1V / 2.2V).
+* **Adaptive Software Thresholding:** Implement a moving average algorithm in software to automatically calibrate the "Day/Night" thresholds based on the ambient light history of the last hour, rather than using hard-coded values
 * **Remote IoT Logging (MQTT):** Integrate an MQTT client to transmit the conditioned data to a cloud dashboard (e.g., AWS IoT Core or ThingsBoard) for long-term environmental analysis and noise pollution heat-mapping.
 * **PCB & SMD Transition:** Convert the breadboard prototype into a custom PCB shield using Surface Mount Devices (SMD) to reduce parasitic capacitance and improve the filter characteristics even further.
 * **Low Power Optimization:** Utilize the ESP32's ULP (Ultra Low Power) coprocessor to monitor the LDR while the main CPU sleeps, waking only when a significant light change occurs.
