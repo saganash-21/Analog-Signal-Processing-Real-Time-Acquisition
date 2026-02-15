@@ -22,7 +22,7 @@ The goal was to move beyond basic "digital read" logic and implement **Analog Si
 * **Solution: Passive RC Band-Pass Filter & DC Bias**
     * **High-Pass Stage:** Removes the sensor's DC offset, isolating the pure AC sound wave.
     * **Low-Pass Stage:** Filters out high-frequency noise and prevents aliasing during ADC sampling.
-    * **DC Bias Network:** A voltage divider ($2 \times 10k\Omega$) re-centers the clean AC signal to **1.65V** (midpoint of the ESP32's 3.3V ADC), ensuring the full negative half of the sound wave is readable without clipping.
+    * **DC Bias Network:** A voltage divider ($2 \times 100k\Omega$) re-centers the clean AC signal to **1.65V** (midpoint of the ESP32's 3.3V ADC), ensuring the full negative half of the sound wave is readable without clipping.
 
 ### 2. The Light Path (DC Signal Processing)
 **Sensor:** Light Dependent Resistor (LDR)
