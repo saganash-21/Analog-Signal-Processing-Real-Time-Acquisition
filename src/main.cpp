@@ -74,11 +74,11 @@ void loop() {
 
   // 3. Plotting
   Serial.print(">Sound_Voltage:");
-  Serial.println(soundVolt); // The raw wave you see now
+  Serial.println(soundVolt); 
   Serial.print(">Sound_Intensity:"); 
-  Serial.println(peakToPeak); // This should JUMP when you clap!
+  Serial.println(peakToPeak); // 
 
-  // 4. LDR & LED Logic (Every 50ms now to match sound window)
+  
   int ldrData = analogRead(ldr_pin);
   float voltage = ldrData * (3.3 / 4095.0);
     if(voltage < (1.1 - 0.05)){
@@ -96,8 +96,7 @@ void loop() {
       digitalWrite(blue_pin, LOW);
       digitalWrite(red_pin, LOW);
     }  
-  // ... your existing LED if/else logic here ...
-
+ 
   Serial.print(">LDR_Voltage:");
   Serial.println(voltage);
 
