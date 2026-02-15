@@ -86,14 +86,17 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 
 ---
 
-## 🔌 Pinout & Wiring (Sensor Interface)
+## 🔌 Pin Configuration & Interface
 
-| Component | ESP32 Pin | Function |
-| :--- | :--- | :--- |
-| **Sound Input** | GPIO 32 (ADC) | **AC Coupled:** Filtered & Biased Audio Signal (Centered @ 1.65V) |
-| **LDR Input** | GPIO 35 (ADC) | **DC Coupled:** Low-Pass Filtered Light Level Voltage |
+The system utilizes **ADC1** for all analog acquisitions to prevent conflicts with the Wi-Fi stack (which uses ADC2).
 
----
+| Peripheral / Circuit | ESP32 GPIO | Pin Function | Signal Type | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **Audio Front-End** | **GPIO 32** | `ADC1_CH4` | **Analog Input (AC)** | Audio waveform centered at **1.65V DC Bias**. <br>*(Range: ~0.5V to ~2.8V during loud events)* |
+| **LDR Filter Stage** | **GPIO 35** | `ADC1_CH7` | **Analog Input (DC)** | Ambient light level, smoothed by hardware integrator. <br>*(Range: 0V - 3.3V)* |
+| **Status LED (Red)** | **GPIO 5** | `DIGITAL_OUT` | Active High | Indicates **Low Light** condition (< 1.1V). |
+| **Status LED (Blue)** | **GPIO 18** | `DIGITAL_OUT` | Active High | Indicates **Medium Light** condition (1.1V - 2.2V). |
+| **Status LED (Green)** | **GPIO 19** | `DIGITAL_OUT` | Active High | Indicates **High Light** condition (> 2.2V). |
 
 ## 🛠️ Getting Started
 
