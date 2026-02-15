@@ -107,6 +107,8 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
     git clone [https://github.com/yourusername/ESP32-Analog-Signal-Processing.git](https://github.com/yourusername/ESP32-Analog-Signal-Processing.git)
     ```
 2.  **Hardware Setup:** * Wire the filters according to `docs/schematic_diagram.png`.
+![Hardware connection](images/hardwareSetup.png)
+
 3.  **Flash Firmware:** * Open `src/main.cpp` in your IDE.
     * Build and Upload to the ESP32.
 4.  **Visualize:** * Open **Teleplot** (VS Code Extension) or Serial Plotter.
