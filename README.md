@@ -21,14 +21,14 @@ The goal was to move beyond basic "digital read" logic and implement **Analog Si
     * **High-Pass Stage:** Removes the sensor's DC offset, isolating the pure AC sound wave.
     * **Low-Pass Stage:** Filters out high-frequency noise and prevents aliasing during ADC sampling.
     * **DC Bias Network:** A voltage divider ($2 \times 100k\Omega$) re-centers the clean AC signal to **1.65V** (midpoint of the ESP32's 3.3V ADC), ensuring the full negative half of the sound wave is readable without clipping.
-![KY-308 Circuit Diagram](docs/KY-308_Setup.png)
+![KY-308 Circuit Diagram](docs/KY-308_Setup.jpeg)
 
 ### 2. The Light Path (DC Signal Processing)
 **Sensor:** Light Dependent Resistor (LDR)
 * **Challenge:** LDRs in indoor environments are prone to "micro-jitter" caused by the 50Hz/60Hz flicker of artificial lighting (mains hum) and transient shadows. Reading this directly results in a noisy signal that causes actuator flickering.
 * **Solution: Hardware Passive Low-Pass Filter (Integrator)**
     * **Architecture:** An RC circuit placed between the LDR voltage divider and the ESP32 ADC pin.
-![LDR connection circuit Diagram](docs/LDR_Setup.png)
+![LDR connection circuit Diagram](docs/LDR_Setup.jpeg)
     * **Physics:** The capacitor charges and discharges slowly, effectively "integrating" the incoming voltage.
     * **Time Constant ($\tau$):** Designed with $\tau \approx 0.1s$. This creates a cutoff frequency that heavily attenuates any signal changing faster than 10Hz (including the 50Hz mains hum).
     * **Result:** The ESP32 receives a **clean, smooth DC voltage** that represents the true *average* light intensity, eliminating the need for heavy software filtering and saving CPU cycles.
@@ -109,7 +109,7 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
     git clone [https://github.com/yourusername/ESP32-Analog-Signal-Processing.git](https://github.com/yourusername/ESP32-Analog-Signal-Processing.git)
     ```
 2.  **Hardware Setup:** * Wire the filters according to `docs/schematic_diagram.png`.
-![Hardware connection](images/hardwareSetup.png)
+![Hardware connection](images/hardwareSetup.jpeg)
 
 3.  **Flash Firmware:** * Open `src/main.cpp` in your IDE.
     * Build and Upload to the ESP32.
