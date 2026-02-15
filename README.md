@@ -62,11 +62,20 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 
 ### 📊 Data Validation
 * **Verification:** Signal integrity was verified visually using **Teleplot**.
-    * Confirmed the centering of the Audio AC wave at 1.65V (DC Bias check).
+    * Confirmed the centering of the Audio AC wave at around 1.65V (DC Bias check).
     * Verified the "Peak-to-Peak" algorithm correctly identified loudness spikes vs. background noise.
 
-![Teleplot Analysis](images/teleplot_audio_capture.png)
-*Figure 2: Real-time waveform analysis showing the Raw Audio Signal (Left) and Calculated Intensity (Right).*
+![Sound Voltage Analysis](images/sound_Volt.png)
+*Figure 2: Real-time waveform analysis showing sound voltage againist time*
+
+![Sound data Analysis](images/Sound_rawData.png)
+*Figure 2: Real-time waveform analysis showing raw sound data againist time*
+
+![Sound Intensity Analysis](images/soundIntense.png)
+*Figure 2: Real-time waveform analysis showing sound Intensity againist time*
+
+![Light Intensity Analysis](images/LDR_Voltage.png)
+*Figure 2: Real-time waveform analysis showing sound voltage againist time*
 
 ---
 
