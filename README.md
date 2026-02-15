@@ -1,5 +1,3 @@
-# Analog-Signal-Processing-Real-Time-Acquisition
-
 # IoT Environmental Monitor: Analog Signal Processing & Real-Time Acquisition
 
 ![Platform](https://img.shields.io/badge/Platform-ESP32-blue) ![Language](https://img.shields.io/badge/Language-C%2B%2B-orange) ![License](https://img.shields.io/badge/License-MIT-green)
@@ -26,10 +24,12 @@ The goal was to move beyond basic "digital read" logic and implement **Analog Si
 
 ### 2. The Light Path (DC Signal Processing)
 **Sensor:** Light Dependent Resistor (LDR)
-* **Challenge:** LDRs can be "jittery" due to flickering artificial light sources (50Hz/60Hz mains hum) or passing shadows, leading to erratic LED switching.
-* **Solution: Passive Low-Pass Filter**
-    * Implemented a hardware RC Low-Pass Filter with a time constant of $\tau \approx 0.1s$.
-    * **Result:** This hardware "averaging" smooths out rapid voltage spikes before the ESP32 even reads the pin, providing a stable DC voltage representing true ambient light.
+* **Challenge:** LDRs in indoor environments are prone to "micro-jitter" caused by the 50Hz/60Hz flicker of artificial lighting (mains hum) and transient shadows. Reading this directly results in a noisy signal that causes actuator flickering.
+* **Solution: Hardware Passive Low-Pass Filter (Integrator)**
+    * **Architecture:** An RC circuit placed between the LDR voltage divider and the ESP32 ADC pin.
+    * **Physics:** The capacitor charges and discharges slowly, effectively "integrating" the incoming voltage.
+    * **Time Constant ($\tau$):** Designed with $\tau \approx 0.1s$. This creates a cutoff frequency that heavily attenuates any signal changing faster than 10Hz (including the 50Hz mains hum).
+    * **Result:** The ESP32 receives a **clean, smooth DC voltage** that represents the true *average* light intensity, eliminating the need for heavy software filtering and saving CPU cycles.
 
 ![Schematic Diagram](docs/schematic_diagram.png)
 *Figure 1: Complete System Schematic designed in EAGLE, showing the Signal Conditioning stages.*
@@ -47,8 +47,8 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 
 ### 2. Telemetry & Control Cycle
 * **Logic:** Immediately following the 50ms audio burst, the system performs a single "housekeeping" cycle.
-* **Update Rate:** This results in an effective **20Hz refresh rate** for the LDR and LED outputs.
-* **Benefit:** Keeps the UI responsive without interrupting the critical audio signal analysis.
+* **Update Rate:** This results in an effective **20Hz refresh rate** for the LDR.
+* **Benefit:** Because the **Hardware Low-Pass Filter** has already cleaned the LDR signal, the software does not need to oversample or average the light data. A single read is sufficient and accurate, keeping the loop efficient.
 
 ---
 
@@ -64,18 +64,19 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 * **Verification:** Signal integrity was verified visually using **Teleplot**.
     * Confirmed the centering of the Audio AC wave at around 1.65V (DC Bias check).
     * Verified the "Peak-to-Peak" algorithm correctly identified loudness spikes vs. background noise.
+    * **LDR Analysis:** Confirmed the LDR voltage curve (Figure 5) is smooth and devoid of 50Hz ripple, proving the effectiveness of the RC Low-Pass filter.
 
 ![Sound Voltage Analysis](images/sound_Volt.png)
-*Figure 2: Real-time waveform analysis showing sound voltage againist time*
+*Figure 2: Real-time waveform analysis showing sound voltage against time*
 
 ![Sound data Analysis](images/Sound_rawData.png)
-*Figure 2: Real-time waveform analysis showing raw sound data againist time*
+*Figure 3: Real-time waveform analysis showing raw sound data against time*
 
 ![Sound Intensity Analysis](images/soundIntense.png)
-*Figure 2: Real-time waveform analysis showing sound Intensity againist time*
+*Figure 4: Real-time waveform analysis showing sound Intensity against time*
 
 ![Light Intensity Analysis](images/LDR_Voltage.png)
-*Figure 2: Real-time waveform analysis showing sound voltage againist time*
+*Figure 5: Real-time waveform analysis showing smoothed LDR voltage against time. Note the absence of high-frequency noise.*
 
 ---
 
@@ -85,15 +86,12 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 
 ---
 
-## 🔌 Pinout & Wiring
+## 🔌 Pinout & Wiring (Sensor Interface)
 
 | Component | ESP32 Pin | Function |
 | :--- | :--- | :--- |
-| **Sound Input** | GPIO 32 (ADC) | Filtered & Biased Audio Signal |
-| **LDR Input** | GPIO 35 (ADC) | Filtered Light Level Voltage |
-| **Red LED** | GPIO 5 | Low Light Indicator (< 1.1V) |
-| **Blue LED** | GPIO 18 | Medium Light Indicator (1.1V - 2.2V) |
-| **Green LED** | GPIO 19 | High Light Indicator (> 2.2V) |
+| **Sound Input** | GPIO 32 (ADC) | **AC Coupled:** Filtered & Biased Audio Signal (Centered @ 1.65V) |
+| **LDR Input** | GPIO 35 (ADC) | **DC Coupled:** Low-Pass Filtered Light Level Voltage |
 
 ---
 
@@ -117,9 +115,11 @@ To manage the conflicting timing requirements of high-speed audio and slow-speed
 ---
 
 ## 🔮 Future Improvements
-* **FFT Analysis:** Move from "Peak-to-Peak" amplitude detection to **Fast Fourier Transform (FFT)** to isolate specific sound frequencies.
-* **IoT Integration:** Send the conditioned data to a cloud dashboard (e.g., Blynk or AWS IoT) for long-term noise pollution logging.
-* **PCB Design:** Convert the breadboard prototype into a custom PCB shield for the ESP32.
+* **FFT Frequency Analysis:** Move from simple "Peak-to-Peak" amplitude detection to **Fast Fourier Transform (FFT)**. This would allow the system to distinguish between different *types* of noise (e.g., distinguishing a low-frequency door slam from high-frequency glass breaking).
+* **Adaptive Software Thresholding:** Implement a moving average algorithm in software to automatically calibrate the "Day/Night" thresholds based on the ambient light history of the last hour, rather than using hard-coded values (1.1V / 2.2V).
+* **Remote IoT Logging (MQTT):** Integrate an MQTT client to transmit the conditioned data to a cloud dashboard (e.g., AWS IoT Core or ThingsBoard) for long-term environmental analysis and noise pollution heat-mapping.
+* **PCB & SMD Transition:** Convert the breadboard prototype into a custom PCB shield using Surface Mount Devices (SMD) to reduce parasitic capacitance and improve the filter characteristics even further.
+* **Low Power Optimization:** Utilize the ESP32's ULP (Ultra Low Power) coprocessor to monitor the LDR while the main CPU sleeps, waking only when a significant light change occurs.
 
 ---
 
